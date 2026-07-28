@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<title>大学生小陆 · 自媒体作品集</title>
+<link rel='preconnect' href='https://fonts.googleapis.com'>
+<link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+<link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&family=Syne:wght@600;700;800&display=swap' rel='stylesheet'>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root{
+    --cyan:#22D3EE; --pink:#FF6EC7; --gold:#FBBF24; --green:#34D399; --purple:#A78BFA;
+    --bg:#021019; --card:#0E1430; --text:#FFFFFF; --muted:#FFFFFFaa; --dim:#FFFFFF44;
+  }
+  html,body{ width:100%; height:100%; overflow:hidden; background:var(--bg); font-family:'Inter',sans-serif; color:var(--text); }
+  body{ position:relative; }
+
+  /* ---------- 流动水流背景 ---------- */
+  .ocean{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+  .ocean::before{ content:''; position:absolute; inset:0;
+    background:radial-gradient(900px 600px at 70% 30%, rgba(34,211,238,.10), transparent 60%),
+               radial-gradient(700px 500px at 15% 75%, rgba(255,110,199,.08), transparent 60%); }
+  .wave{ position:absolute; left:0; bottom:0; width:200%; height:auto; opacity:.55; }
+  .wave1{ animation:drift 20s linear infinite; }
+  .wave2{ animation:drift 28s linear infinite reverse; opacity:.45; }
+  .wave3{ animation:drift 36s linear infinite; opacity:.35; }
+  @keyframes drift{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+  .bubbles span{ position:absolute; bottom:-30px; border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.5), rgba(34,211,238,.12));
+    animation:rise linear infinite; }
+  @keyframes rise{
+    0%{ transform:translateY(0) scale(.6); opacity:0; }
+    10%{ opacity:.7; } 90%{ opacity:.5; }
+    100%{ transform:translateY(-110vh) scale(1); opacity:0; }
+  }
+  .caustic{ position:absolute; inset:0; mix-blend-mode:screen; opacity:.10;
+    background:repeating-linear-gradient(115deg, rgba(34,211,238,.6) 0 2px, transparent 2px 22px);
+    animation:shimmer 12s ease-in-out infinite; }
+  @keyframes shimmer{ 0%,100%{transform:translateX(0);} 50%{transform:translateX(40px);} }
+
+  /* ---------- 布局 ---------- */
+  .app{ position:relative; z-index:2; height:100vh; display:flex; flex-direction:column; }
+  header{ display:flex; align-items:center; justify-content:space-between; padding:26px 64px 0; }
+  .brand .title{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:36px; letter-spacing:-.01em; color:var(--gold); text-shadow:0 0 24px rgba(251,191,36,.5); }
+  .brand .sub{ font-size:14px; color:var(--muted); margin-top:4px; font-weight:400; }
+  .dots{ display:flex; gap:14px; align-items:center; }
+  .dots i{ width:9px; height:9px; border-radius:50%; background:var(--dim); transition:.35s; }
+  .dots i.on{ background:var(--cyan); box-shadow:0 0 12px var(--cyan); transform:scale(1.25); }
+
+  .stage{ flex:1; display:flex; align-items:center; justify-content:center; gap:30px; perspective:1400px; }
+  .card{ position:relative; border-radius:20px; background:var(--card); overflow:hidden;
+    transition:transform .55s cubic-bezier(.2,.8,.2,1), opacity .55s, filter .55s, box-shadow .55s; }
+  .card.side{ width:340px; height:560px; opacity:.4; filter:blur(4px); transform:scale(.82); }
+  .card.side.left{ transform:scale(.82) translateX(20px) rotateY(8deg); }
+  .card.side.right{ transform:scale(.82) translateX(-20px) rotateY(-8deg); }
+  .card.main{ width:680px; height:700px; padding:36px 40px; display:flex; flex-direction:column; gap:18px;
+    border:2px solid var(--accent, var(--cyan)); box-shadow:0 24px 80px rgba(0,0,0,.55), 0 0 50px color-mix(in srgb, var(--accent) 22%, transparent);
+    transform:scale(1); opacity:1; filter:none; }
+  .card.main:hover{ overflow:visible; }
+  .card.main::after{ content:''; position:absolute; inset:0; border-radius:18px; pointer-events:none;
+    background:linear-gradient(160deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 55%); }
+  .badge{ align-self:flex-start; display:inline-flex; align-items:center; gap:8px;
+    padding:7px 16px; border-radius:999px; font-family:'Syne',sans-serif; font-weight:700;
+    font-size:11px; letter-spacing:.1em; color:var(--accent);
+    background:color-mix(in srgb, var(--accent) 16%, transparent);
+    border:1px solid color-mix(in srgb, var(--accent) 55%, transparent); }
+  .ctitle{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:40px; line-height:1.05; letter-spacing:-.02em; }
+  .csub{ font-size:13px; color:var(--muted); font-weight:400; }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .stat{ padding:18px; border-radius:12px; background:rgba(255,255,255,.05); }
+  .stat .l{ font-family:'Syne',sans-serif; font-size:10px; font-weight:600; letter-spacing:.1em; color:var(--dim); }
+  .stat .v{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:30px; line-height:1; margin-top:6px; }
+  .stat .t{ font-size:11px; color:var(--green); font-weight:600; margin-top:4px; }
+  .mini{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .mini div{ padding:14px 10px; border-radius:10px; background:rgba(255,255,255,.04); text-align:center; }
+  .mini .ml{ font-family:'Syne',sans-serif; font-size:8px; letter-spacing:.06em; color:var(--dim); }
+  .mini .mv{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; margin-top:4px; }
+  .cases{ display:flex; flex-direction:column; gap:11px; }
+  .case{ padding:13px 16px; border-radius:12px; background:rgba(255,255,255,.05); display:flex; gap:14px; align-items:center; }
+  .case .ctext{ flex:1; }
+  .case h4{ font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:700; }
+  .case p{ font-size:11.5px; color:var(--muted); line-height:1.45; margin-top:5px; }
+  .two{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .two .box{ padding:16px; border-radius:12px; background:rgba(255,255,255,.05); }
+  .two .bl{ font-family:'Syne',sans-serif; font-size:11px; color:var(--dim); }
+  .two .bv{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:24px; margin-top:6px; }
+  .focus{ padding:16px 18px; border-radius:12px; background:rgba(255,255,255,.06); }
+  .focus .fl{ font-family:'Syne',sans-serif; font-size:12px; color:var(--green); letter-spacing:.08em; }
+  .focus .fv{ font-size:13.5px; color:#FFFFFFbb; line-height:1.55; margin-top:7px; font-weight:500; }
+  .about p{ font-size:15px; color:#FFFFFFbb; line-height:1.7; }
+  .contacts{ display:flex; flex-direction:column; gap:0; }
+  .contacts .row{ display:flex; justify-content:space-between; align-items:center; padding:14px 4px; border-bottom:1px solid rgba(255,255,255,.07); }
+  .contacts .cl{ font-size:14px; color:var(--muted); }
+  .contacts .cr{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; }
+
+  .idx{ position:absolute; top:30px; right:38px; font-family:'Space Grotesk',sans-serif; font-weight:700; }
+  .idx .n{ font-size:58px; color:rgba(255,255,255,.08); line-height:1; }
+  .idx .s{ font-size:18px; color:var(--dim); }
+
+  .side .sbadge{ position:absolute; top:28px; left:28px; font-family:'Syne',sans-serif; font-weight:700; font-size:10px; letter-spacing:.12em; color:var(--dim); }
+  .side .stitle{ position:absolute; top:58px; left:28px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:28px; color:#FFFFFF55; }
+  .side .sstat{ position:absolute; bottom:28px; left:28px; font-size:13px; color:#FFFFFF26; font-weight:500; }
+
+  /* ---------- 控制栏 ---------- */
+  footer{ display:flex; align-items:center; justify-content:center; gap:30px; padding:0 0 34px; }
+  .key{ display:flex; align-items:center; gap:12px; padding:12px 24px; border-radius:14px; }
+  .key .cap{ width:38px; height:38px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:18px; font-family:'Inter',sans-serif; }
+  .key .kl{ font-size:12px; font-weight:600; letter-spacing:.05em; }
+  .key.w{ background:rgba(34,211,238,.10); } .key.w .cap{ background:rgba(34,211,238,.22); color:var(--cyan); } .key.w .kl{ color:rgba(34,211,238,.7); }
+  .key.s{ background:rgba(255,255,255,.05); } .key.s .cap{ background:rgba(255,255,255,.12); color:#FFFFFF99; } .key.s .kl{ color:var(--muted); }
+  .hint{ font-family:'Syne',sans-serif; font-size:11px; letter-spacing:.12em; color:var(--dim); }
+  .nav-arrows{ position:absolute; top:50%; transform:translateY(-50%); font-family:'Syne',sans-serif; font-size:11px; letter-spacing:.15em; color:var(--dim); z-index:3; }
+  .nav-arrows.l{ left:40px; } .nav-arrows.r{ right:40px; }
+
+  /* ---------- 游泳的手 ---------- */
+  .hand{ position:absolute; top:50%; transform:translateY(-50%); width:300px; height:150px; z-index:3; pointer-events:none; opacity:.92; }
+  .hand.left{ left:24px; }
+  .hand.right{ right:24px; transform:translateY(-50%); }
+  .arm{ width:100%; height:100%; transform-origin:0% 50%; animation:idleArm 4.5s ease-in-out infinite; filter:drop-shadow(0 0 14px rgba(34,211,238,.45)); }
+  .hand.swim-back .arm{ animation:strokeBack .8s ease-out both; }
+  .hand.swim-front .arm{ animation:strokeFront .8s ease-out both; }
+  @keyframes idleArm{ 0%,100%{transform:rotate(8deg);} 50%{transform:rotate(-3deg);} }
+  @keyframes strokeBack{ 0%{transform:rotate(8deg);} 45%{transform:rotate(40deg);} 100%{transform:rotate(8deg);} }
+  @keyframes strokeFront{ 0%{transform:rotate(8deg);} 45%{transform:rotate(-20deg);} 100%{transform:rotate(8deg);} }
+  .case-img{ width:104px; height:74px; object-fit:cover; border-radius:10px; border:1px solid rgba(255,255,255,.1); flex-shrink:0;
+    transition:transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s; cursor:pointer; }
+  .case-img:hover{ transform:scale(2.8); z-index:20; position:relative; box-shadow:0 16px 60px rgba(0,0,0,.7); }
+  .zoom-img{ max-width:100%; border-radius:12px; border:1px solid rgba(255,255,255,.08); cursor:pointer;
+    transition:transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s; object-fit:cover; }
+  .zoom-img:hover{ transform:scale(2.3); z-index:20; position:relative; box-shadow:0 20px 60px rgba(0,0,0,.7); }
+</style>
+</head>
+<body>
+  <div class='ocean'>
+    <div class='caustic'></div>
+    <svg class='wave wave1' viewBox='0 0 1440 320' preserveAspectRatio='none'><path d='M0,160 C240,80 480,240 720,160 C960,80 1200,240 1440,160 L1440,320 L0,320 Z' fill='#22D3EE' fill-opacity='0.10'/></svg>
+    <svg class='wave wave2' viewBox='0 0 1440 320' preserveAspectRatio='none'><path d='M0,200 C300,120 540,280 780,200 C1020,120 1260,280 1440,200 L1440,320 L0,320 Z' fill='#FF6EC7' fill-opacity='0.08'/></svg>
+    <svg class='wave wave3' viewBox='0 0 1440 320' preserveAspectRatio='none'><path d='M0,240 C360,160 600,300 840,240 C1080,160 1320,300 1440,240 L1440,320 L0,320 Z' fill='#A78BFA' fill-opacity='0.07'/></svg>
+    <div class='bubbles' id='bubbles'></div>
+  </div>
+
+  <div class='app'>
+    <header>
+      <div class='brand'>
+        <div class='title'>大学生小陆</div>
+        <div class='sub'>3分钟就能了解我，节省你的时间就是利你</div>
+      </div>
+      <div class='dots' id='dots'></div>
+    </header>
+
+    <div class='nav-arrows l'>&#9664; PREV</div>
+    <div class='nav-arrows r'>NEXT &#9654;</div>
+
+    <div class='hand left' id='handL'>
+      <svg class='arm' viewBox='0 0 300 150' fill='none'>
+        <defs><linearGradient id='armgL' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#22D3EE' stop-opacity='0.12'/><stop offset='1' stop-color='#22D3EE' stop-opacity='0.5'/></linearGradient></defs>
+        <path d='M8,75 C70,60 150,68 205,75' stroke='url(#armgL)' stroke-width='26' stroke-linecap='round'/>
+        <g stroke='#22D3EE' stroke-width='7' stroke-linecap='round'>
+          <ellipse cx='238' cy='75' rx='30' ry='34' fill='rgba(34,211,238,0.12)'/>
+          <line x1='266' y1='58' x2='296' y2='52'/>
+          <line x1='268' y1='72' x2='298' y2='73'/>
+          <line x1='266' y1='88' x2='296' y2='92'/>
+          <line x1='260' y1='102' x2='288' y2='110'/>
+          <line x1='222' y1='46' x2='214' y2='14'/>
+        </g>
+      </svg>
+    </div>
+    <div class='hand right' id='handR'>
+      <svg class='arm' viewBox='0 0 300 150' fill='none'>
+        <defs><linearGradient id='armgR' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#22D3EE' stop-opacity='0.5'/><stop offset='1' stop-color='#22D3EE' stop-opacity='0.12'/></linearGradient></defs>
+        <path d='M292,75 C230,60 150,68 95,75' stroke='url(#armgR)' stroke-width='26' stroke-linecap='round'/>
+        <g stroke='#22D3EE' stroke-width='7' stroke-linecap='round'>
+          <ellipse cx='62' cy='75' rx='30' ry='34' fill='rgba(34,211,238,0.12)'/>
+          <line x1='34' y1='58' x2='4' y2='52'/>
+          <line x1='32' y1='72' x2='2' y2='73'/>
+          <line x1='34' y1='88' x2='4' y2='92'/>
+          <line x1='40' y1='102' x2='12' y2='110'/>
+          <line x1='78' y1='46' x2='86' y2='14'/>
+        </g>
+      </svg>
+    </div>
+
+    <div class='stage' id='stage'>
+      <div class='card side left' id='cardL'></div>
+      <div class='card main' id='cardM'></div>
+      <div class='card side right' id='cardR'></div>
+    </div>
+
+    <footer>
+      <div class='key w'><div class='cap'>W</div><div class='kl'>下潜 / DIVE DEEPER</div></div>
+      <div class='hint'>USE W / S TO SWIM BETWEEN SECTIONS</div>
+      <div class='key s'><div class='cap'>S</div><div class='kl'>上浮 / SURFACE UP</div></div>
+    </footer>
+  </div>
+
+<script>
+  const SECTIONS = [
+    {
+      accent:'#22D3EE', badge:'BILIBILI / b站', title:'B站数据中心',
+      sub:'大学生小陆 / 创作者等级 LV5 / 数据更新于 2026.07',
+      short:'162.1万播放 / 1.7万粉丝',
+      main:`
+        <div class='grid'>
+          <div class='stat'><div class='l'>播放量 VIEWS</div><div class='v'>162.1万</div><div class='t'>持续增长中 ↑</div></div>
+          <div class='stat'><div class='l'>粉丝总数 FANS</div><div class='v'>1.7万</div><div class='t'>+80/天 ↑</div></div>
+          <div class='stat'><div class='l'>获赞总数 LIKES</div><div class='v'>4.6万</div><div class='t'>+>100% ↑</div></div>
+          <div class='stat'><div class='l'>收藏数 FAVS</div><div class='v'>2.8万</div><div class='t'>+>100% ↑</div></div>
+        </div>
+        <div class='mini'>
+          <div><div class='ml'>投币 COINS</div><div class='mv' style='color:#FBBF24'>832</div></div>
+          <div><div class='ml'>评论 COMMENTS</div><div class='mv' style='color:#22D3EE'>1286</div></div>
+          <div><div class='ml'>弹幕 DANMU</div><div class='mv' style='color:#FF6EC7'>184</div></div>
+          <div><div class='ml'>分享 SHARE</div><div class='mv' style='color:#34D399'>588</div></div>
+        </div>`
+    },
+    {
+      accent:'#FF6EC7', badge:'DOUYIN / 抖音', title:'抖音数据中心',
+      sub:'大学生小陆 / 21岁 / 41条作品 / 数据截止 2026.07',
+      short:'500W+播放 / 20W+获赞',
+      main:`
+        <div class='grid'>
+          <div class='stat'><div class='l'>粉丝总数 FANS</div><div class='v'>1.5W+</div></div>
+          <div class='stat'><div class='l'>获赞总量 LIKES</div><div class='v'>20W+</div></div>
+          <div class='stat'><div class='l'>累计播放 VIEWS</div><div class='v'>500W+</div></div>
+          <div class='stat'><div class='l'>总收藏 FAVS</div><div class='v'>10W+</div></div>
+        </div>
+        <div class='focus'><div class='fl'>30日互动 INTERACT</div><div class='fv' style='font-size:22px;color:#fff;font-weight:700;margin-top:6px'>5000+ 次深度互动</div></div>
+        <div class='two'>
+          <div class='box'><div class='bl'>性别 GENDER</div><div class='bv' style='color:#FF6EC7'>男72% / 女28%</div></div>
+          <div class='box'><div class='bl'>年龄 AGE</div><div class='bv' style='color:#22D3EE'>18-26岁主力</div></div>
+        </div>
+        <div class='focus'><div class='fl'>内容偏好 FOCUS</div><div class='fv'>租房 / 求职 / 生活 三大青年刚需赛道</div></div>`
+    },
+    {
+      accent:'#FBBF24', badge:'TOP CASES / 爆款解析', title:'爆款内容案例',
+      sub:'单条最高160W+播放 / 垂直深耕青年刚需话题',
+      short:'青年驿站160W+ / 租房114W+',
+      main:`
+        <div class='cases'>
+          <div class='case'><img class='case-img' src='images/dy-works-grads_home.png'><div class='ctext'><h4 style='color:#FF6EC7'>01 青年驿站城市攻略</h4><p>单条播放 160.3W+ ｜ 从异乡落脚痛点切入，打造大学生城市生存信息内容</p></div></div>
+          <div class='case'><img class='case-img' src='images/dy-Rental_collection.png'><div class='ctext'><h4 style='color:#22D3EE'>02 大学生租房干货系列</h4><p>单条播放 114.8W+ ｜ 围绕毕业租房、实习搬家、避坑指南持续垂直输出</p></div></div>
+          <div class='case'><img class='case-img' src='images/dy-Find_job_collection.png'><div class='ctext'><h4 style='color:#34D399'>03 大学生找工作干货系列</h4><p>校招流程、简历优化、面试技巧、求职避坑全套运营内容复盘</p></div></div>
+        </div>
+        <div class='focus'><div class='fl'>内容方法论 METHOD</div><div class='fv'>痛点切入 → 垂直深耕 → 系列化沉淀，用真实经历换取同龄人信任</div></div>`
+    },
+    {
+      accent:'#34D399', badge:'FAN PORTRAIT / 双平台', title:'粉丝画像解析',
+      sub:'双平台粉丝高度重合 / 精准年轻男性受众 / 内容定位清晰',
+      short:'男性主导 / 16-26岁',
+      main:`
+        <div class='two'>
+          <div class='box'><div class='bl' style='color:#22D3EE'>B站 男性主导</div><div class='bv'>77.6%</div></div>
+          <div class='box'><div class='bl' style='color:#FF6EC7'>抖音 男性主导</div><div class='bv'>72%</div></div>
+        </div>
+        <div class='two'>
+          <div class='box'><div class='bl'>B站 核心年龄</div><div class='bv' style='color:#22D3EE'>16-25岁</div></div>
+          <div class='box'><div class='bl'>抖音 核心年龄</div><div class='bv' style='color:#FF6EC7'>18-26岁</div></div>
+        </div>
+        <div class='focus'><div class='fl'>内容精准定位</div><div class='fv'>异地求职落脚 ｜ 租房避坑指南 ｜ 应届生成长干货 ｜ 城市生存信息</div></div>
+        <div style='display:flex;gap:12px;margin-top:8px;overflow:hidden;'>
+          <img class='zoom-img' src='images/b-fan_portrait.png' style='width:48%;height:auto;' alt='B站粉丝画像'>
+          <img class='zoom-img' src='images/dy-fan_portrait.png' style='width:48%;height:auto;' alt='抖音粉丝画像'>
+        </div>`
+    },
+    {
+      accent:'#A78BFA', badge:'ABOUT / 关于我', title:'关于小陆',
+      sub:'独立内容创作者 / 双平台 3万+ 粉丝',
+      short:'联系我 yBunnyy',
+      main:`
+        <div class='about'><p>独立内容创作者 ｜ 双平台 3万+ 粉丝 ｜ 专注青年刚需内容策划与运营。用数据说话，用内容连接同龄人。</p></div>
+        <div class='contacts'>
+          <div class='row'><div class='cl'>抖音 / DOUYIN</div><div class='cr' style='color:#FF6EC7'>@大学生小陆</div></div>
+          <div class='row'><div class='cl'>B站 / BILIBILI</div><div class='cr' style='color:#22D3EE'>@大学生小陆</div></div>
+          <div class='row'><div class='cl'>联系我 / CONTACT</div><div class='cr' style='color:#34D399'>yBunnyy</div></div>
+        </div>
+        <div class='focus'><div class='fl'>OPEN TO</div><div class='fv'>商务合作 / 内容共创 / 技术交流 / 设计委托</div></div>
+        <div style='display:flex;gap:12px;margin-top:10px;overflow:hidden;'>
+          <img class='zoom-img' src='images/b-home_page.png' style='width:48%;height:auto;' alt='B站主页'>
+          <img class='zoom-img' src='images/dy-home_page.png' style='width:48%;height:auto;' alt='抖音主页'>
+        </div>`
+    }
+  ];
+
+  let cur = 0;
+  const N = SECTIONS.length;
+  const stage = document.getElementById('stage');
+  const cardM = document.getElementById('cardM');
+  const cardL = document.getElementById('cardL');
+  const cardR = document.getElementById('cardR');
+  const dots = document.getElementById('dots');
+  const bubbles = document.getElementById('bubbles');
+  const handL = document.getElementById('handL');
+  const handR = document.getElementById('handR');
+  function splash(cls){ [handL,handR].forEach(h=>{ h.classList.remove('swim-back','swim-front'); void h.offsetWidth; h.classList.add(cls); }); }
+
+  SECTIONS.forEach((_,i)=>{ const d=document.createElement('i'); if(i===0)d.classList.add('on'); dots.appendChild(d); });
+
+  for(let i=0;i<18;i++){
+    const b=document.createElement('span');
+    const s=4+Math.random()*12;
+    b.style.width=s+'px'; b.style.height=s+'px';
+    b.style.left=Math.random()*100+'%';
+    b.style.animationDuration=(8+Math.random()*12)+'s';
+    b.style.animationDelay=(-Math.random()*12)+'s';
+    bubbles.appendChild(b);
+  }
+
+  function render(){
+    const prev=(cur-1+N)%N, next=(cur+1)%N, me=cur;
+    const a=SECTIONS[me], p=SECTIONS[prev], n=SECTIONS[next];
+    cardM.style.setProperty('--accent', a.accent);
+    cardM.style.borderColor=a.accent;
+    cardM.style.boxShadow='0 24px 80px rgba(0,0,0,.55), 0 0 50px '+a.accent+'38';
+    cardM.innerHTML=`<div class='idx'><span class='n'>${String(me+1).padStart(2,'0')}</span><span class='s'> / ${N}</span></div>`
+      +`<div class='badge'>${a.badge}</div><div class='ctitle'>${a.title}</div><div class='csub'>${a.sub}</div>${a.main}`;
+    cardL.style.borderColor=p.accent;
+    cardL.innerHTML=`<div class='sbadge'>PREV</div><div class='stitle'>${p.title}</div><div class='sstat'>${p.short}</div>`;
+    cardR.style.borderColor=n.accent;
+    cardR.innerHTML=`<div class='sbadge'>NEXT</div><div class='stitle'>${n.title}</div><div class='sstat'>${n.short}</div>`;
+    [...dots.children].forEach((d,i)=>d.classList.toggle('on', i===cur));
+  }
+
+  function go(dir){ cur=(cur+dir+N)%N; render(); }
+  window.addEventListener('keydown', e=>{
+    if(e.key==='w'||e.key==='W'||e.key==='ArrowDown'){ splash('swim-back'); go(1); }
+    if(e.key==='s'||e.key==='S'||e.key==='ArrowUp'){ splash('swim-front'); go(-1); }
+  });
+  cardL.parentElement.addEventListener('click', ()=>go(-1));
+  cardR.parentElement.addEventListener('click', ()=>go(1));
+
+  render();
+</script>
+</body>
+</html>
